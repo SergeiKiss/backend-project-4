@@ -16,5 +16,10 @@
   "bugs": {
     "url": "https://github.com/SergeiKiss/backend-project-4/issues"
   },
-  "homepage": "https://github.com/SergeiKiss/backend-project-4#readme"
+  "homepage": "https://github.com/SergeiKiss/backend-project-4#readme",
+  "devDependencies": {
+    "eslint": "^8.46.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.28.0"
+  }
 }
