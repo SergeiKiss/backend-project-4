@@ -2,8 +2,11 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "[![Actions Status](https://github.com/SergeiKiss/backend-project-4/workflows/hexlet-check/badge.svg)](https://github.com/SergeiKiss/backend-project-4/actions)",
-  "main": "index.js",
+  "main": "src/index.js",
   "type": "module",
+  "bin": {
+    "page-loader": "./bin/page-loader.js"
+  },
   "scripts": {
     "test": "npx jest"
   },
