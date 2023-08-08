@@ -1,7 +1,7 @@
 {
   "name": "@hexlet/code",
   "version": "1.0.0",
-  "description": "[![Actions Status](https://github.com/SergeiKiss/backend-project-4/workflows/hexlet-check/badge.svg)](https://github.com/SergeiKiss/backend-project-4/actions)",
+  "description": "Page loader utility",
   "main": "src/index.js",
   "type": "module",
   "bin": {
@@ -24,5 +24,8 @@
     "eslint": "^8.46.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.28.0"
+  },
+  "dependencies": {
+    "commander": "^11.0.0"
   }
 }

@@ -1,3 +1,3 @@
-export default () => {
-  console.log('hello');
+export default (url) => {
+  console.log(url);
 };
