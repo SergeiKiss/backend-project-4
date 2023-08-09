@@ -1,9 +1,38 @@
-// import * as path from 'path';
-// import { fileURLToPath } from 'url';
-// import { test, expect } from '@jest/globals'; // eslint-disable-line
-// import loadPage from '../src/index.js';
+import fs from 'fs/promises';
+import os from 'os';
+import path from 'path';
+import { beforeEach, test, expect, afterAll } from '@jest/globals'; // eslint-disable-line
+import nock from 'nock'; // eslint-disable-line
+import loadPage from '../src/index.js';
 
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
+// loadPage(url, outputPath)
 
-// const getFixturePath = (filename) => path.join(__dirname, '.', '__fixtures__', filename);
+nock.disableNetConnect();
+
+const noop = () => {};
+let currentDir;
+
+beforeEach(async () => {
+  await fs.rm(currentDir, { recursive: true }).catch(noop);
+  currentDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader-'));
+});
+
+test('page-loader - basic case', async () => {
+  const url = 'https://ru.hexlet.io/courses';
+  nock(url.origin)
+    .get(url.pathname)
+    .reply(200, 'test data');
+
+  const actualPath = await loadPage(url, currentDir);
+
+  const expectedData = 'test data';
+  const expectedPath = `${currentDir}/ru-hexlet-io-courses.html`;
+  const actualData = await fs.readFile(expectedPath);
+
+  expect(actualData).toEqual(expectedData);
+  expect(actualPath).toEqual(expectedPath);
+});
+
+afterAll(() => {
+  fs.rm(currentDir, { recursive: true }).catch(noop);
+});

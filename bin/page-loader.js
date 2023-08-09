@@ -8,8 +8,8 @@ program
   .option('-o, --output [dir]', 'output dir', '/home/user/current-dir')
   .arguments('<url>')
   .action((url, options) => {
-    app(url);
-    console.log(options);
+    const { output } = options;
+    app(url, output);
   });
 
 program.parse();
