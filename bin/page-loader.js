@@ -9,7 +9,8 @@ program
   .arguments('<url>')
   .action((url, options) => {
     const { output } = options;
-    app(url, output);
+    const dirPath = output === '/home/user/current-dir' ? process.cwd() : output;
+    app(url, dirPath);
   });
 
 program.parse();
