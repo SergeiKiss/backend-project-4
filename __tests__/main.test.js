@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
-import { beforeEach, test, expect, afterAll } from '@jest/globals'; // eslint-disable-line
+import { beforeEach, test, expect, afterAll, jest } from '@jest/globals'; // eslint-disable-line
 import nock from 'nock'; // eslint-disable-line
 import loadPage from '../src/index.js';
 
@@ -10,6 +10,7 @@ import loadPage from '../src/index.js';
 nock.disableNetConnect();
 
 const noop = () => {};
+const expectedData = 'test data';
 let currentDir;
 
 beforeEach(async () => {
@@ -23,14 +24,15 @@ test('page-loader - basic case', async () => {
     .get(url.pathname)
     .reply(200, 'test data');
 
-  const actualPath = await loadPage(url.href, currentDir);
+  const logSpy = jest.spyOn(console, 'log');
 
-  const expectedData = 'test data';
+  await loadPage(url.href, currentDir);
+
   const expectedPath = `${currentDir}/ru-hexlet-io-courses.html`;
-  const actualData = await fs.readFile(expectedPath);
+  const actualData = await fs.readFile(expectedPath, { encoding: 'utf8' });
 
   expect(actualData).toEqual(expectedData);
-  expect(actualPath).toEqual(expectedPath);
+  expect(logSpy).toHaveBeenCalledWith(expectedPath);
 });
 
 afterAll(() => {

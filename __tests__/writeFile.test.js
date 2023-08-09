@@ -7,6 +7,7 @@ import wf from '../src/writeFile.js';
 // wf(url, dir, data)
 
 const noop = () => {};
+const expectedData = 'test data';
 let currentDir;
 
 beforeEach(async () => {
@@ -15,15 +16,23 @@ beforeEach(async () => {
 });
 
 test('writeFile - basic case', async () => {
-  const expectedData = 'test data';
   const url = 'https://ru.hexlet.io/courses';
   const actualPath = await wf(url, currentDir, expectedData);
-
   const expectedPath = `${currentDir}/ru-hexlet-io-courses.html`;
-  const actualData = await fs.readFile(expectedPath);
-
-  expect(actualData).toEqual(expectedData);
   expect(actualPath).toEqual(expectedPath);
+
+  const actualData = await fs.readFile(expectedPath, 'utf-8');
+  expect(actualData).toEqual(expectedData);
+});
+
+test('writeFile - case with numbers in url', async () => {
+  const url = 'https://ru.hexlet.io/123456';
+  const actualPath = await wf(url, currentDir, expectedData);
+  const expectedPath = `${currentDir}/ru-hexlet-io-123456.html`;
+  expect(actualPath).toEqual(expectedPath);
+
+  const actualData = await fs.readFile(expectedPath, 'utf-8');
+  expect(actualData).toEqual(expectedData);
 });
 
 afterAll(() => {
