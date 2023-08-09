@@ -18,12 +18,12 @@ beforeEach(async () => {
 });
 
 test('page-loader - basic case', async () => {
-  const url = 'https://ru.hexlet.io/courses';
+  const url = new URL('https://ru.hexlet.io/courses');
   nock(url.origin)
     .get(url.pathname)
     .reply(200, 'test data');
 
-  const actualPath = await loadPage(url, currentDir);
+  const actualPath = await loadPage(url.href, currentDir);
 
   const expectedData = 'test data';
   const expectedPath = `${currentDir}/ru-hexlet-io-courses.html`;
