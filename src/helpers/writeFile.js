@@ -1,10 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-
-const replaceSymbols = (str) => {
-  const reg = /[^a-zа-яё\d]/g;
-  return str.replaceAll(reg, '-');
-};
+import replaceSymbols from './common-funcs.js';
 
 export default (url, dir, data) => {
   const { hostname, pathname } = new URL(url);

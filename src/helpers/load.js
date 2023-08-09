@@ -1,4 +1,4 @@
-import axios from "axios"; // eslint-disable-line
+import axios from 'axios'; // eslint-disable-line
 
 export default (url) => axios
   .get(url)

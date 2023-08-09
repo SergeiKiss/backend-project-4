@@ -1,6 +1,6 @@
 import { test, expect } from '@jest/globals'; // eslint-disable-line
 import nock from 'nock'; // eslint-disable-line
-import load from '../src/load.js';
+import load from '../src/helpers/load.js';
 
 // load(url)
 
