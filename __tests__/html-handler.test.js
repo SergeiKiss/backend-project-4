@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import { beforeEach, test, expect, afterAll } from '@jest/globals'; // eslint-disable-line
 import extractFilesAndPrepareHTML from '../src/helpers/html-handler.js';
 
-// extractFilesAndPrepareHTML(rawHTML, dir)
+// extractFilesAndPrepareHTML(url, dir, rawHTML)
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,8 +26,9 @@ beforeEach(async () => {
   expectedHTML = await fs.readFile(afterPath, 'utf-8');
 });
 
-test('', async () => {
-  const preparedHTML = await extractFilesAndPrepareHTML(rawHTML);
+test('extractFilesAndPrepareHTML - basic case', async () => {
+  const url = 'https://ru.hexlet.io/courses';
+  const preparedHTML = await extractFilesAndPrepareHTML(url, currentDir, rawHTML);
   expect(preparedHTML).toEqual(expectedHTML);
 
   const expectedFilesDirPath = path.resolve(currentDir, 'ru-hexlet-io-courses_files');
