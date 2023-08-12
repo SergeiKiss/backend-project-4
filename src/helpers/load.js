@@ -5,4 +5,4 @@ export default (url, responseType = 'json') => axios({
   url,
   responseType,
 }).then((response) => response.data)
-  .catch((e) => console.error(e));
+  .catch(() => {});

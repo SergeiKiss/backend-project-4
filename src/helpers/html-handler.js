@@ -19,6 +19,7 @@ const loadFilesAndChangeAttrs = (elements, outputDir, url, $, attrName) => {
       el.attr(attrName, path.join(outputDir.dirFilesName, elName));
       load(elURL, responseType)
         .then((data) => {
+          if (data === undefined) return;
           fs.writeFile(elPath, data);
         });
     }
