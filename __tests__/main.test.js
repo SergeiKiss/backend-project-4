@@ -76,7 +76,15 @@ test('page-loader - basic case', async () => {
 
   const imgPath = path.join(expectedFilesDirPath, imgName);
   const actualImage = await fs.readFile(imgPath);
-  expect(expectedImage).toEqual(actualImage);
+  expect(actualImage).toEqual(expectedImage);
+
+  const stylesheetPath = path.join(expectedFilesDirPath, stylesheetName);
+  const actualStylesheet = await fs.readFile(stylesheetPath, 'utf-8');
+  expect(actualStylesheet).toEqual('h3 { font-weight: normal; }');
+
+  const scriptPath = path.join(expectedFilesDirPath, scriptName);
+  const actualScript = await fs.readFile(scriptPath, 'utf-8');
+  expect(actualScript).toEqual("console.log('Hello, World!')");
 });
 
 afterAll(() => {

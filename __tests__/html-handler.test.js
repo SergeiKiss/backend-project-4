@@ -43,6 +43,16 @@ test('extractFilesAndPrepareHTML - basic case', async () => {
     .get(imgURL.pathname)
     .reply(200, expectedImage);
 
+  const stylesheetURL = new URL('https://ru.hexlet.io/assets/application.css');
+  nock(stylesheetURL.origin)
+    .get(stylesheetURL.pathname)
+    .reply(200, 'h3 { font-weight: normal; }');
+
+  const scriptURL = new URL('https://ru.hexlet.io/packs/js/runtime.js');
+  nock(scriptURL.origin)
+    .get(scriptURL.pathname)
+    .reply(200, "console.log('Hello, World!')");
+
   const preparedHTML = await extractFilesAndPrepareHTML(url, currentDir, rawHTML)
     .then(async (html) => {
       const prettierConfig = await prettier.resolveConfig(afterPath);
@@ -66,7 +76,15 @@ test('extractFilesAndPrepareHTML - basic case', async () => {
 
   const imgPath = path.join(expectedFilesDirPath, imgName);
   const actualImage = await fs.readFile(imgPath);
-  expect(expectedImage).toEqual(actualImage);
+  expect(actualImage).toEqual(expectedImage);
+
+  const stylesheetPath = path.join(expectedFilesDirPath, stylesheetName);
+  const actualStylesheet = await fs.readFile(stylesheetPath, 'utf-8');
+  expect(actualStylesheet).toEqual('h3 { font-weight: normal; }');
+
+  const scriptPath = path.join(expectedFilesDirPath, scriptName);
+  const actualScript = await fs.readFile(scriptPath, 'utf-8');
+  expect(actualScript).toEqual("console.log('Hello, World!')");
 });
 
 afterAll(() => {
