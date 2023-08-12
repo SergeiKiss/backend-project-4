@@ -67,8 +67,12 @@ test('page-loader - basic case', async () => {
     });
 
   const imgName = 'ru-hexlet-io-assets-professions-nodejs.png';
+  const stylesheetName = 'ru-hexlet-io-assets-application.css';
+  const scriptName = 'ru-hexlet-io-packs-js-runtime.js';
   const contentPaths = await fs.readdir(expectedFilesDirPath);
   expect(contentPaths.includes(imgName)).toBeTruthy();
+  expect(contentPaths.includes(stylesheetName)).toBeTruthy();
+  expect(contentPaths.includes(scriptName)).toBeTruthy();
 
   const imgPath = path.join(expectedFilesDirPath, imgName);
   const actualImage = await fs.readFile(imgPath);
