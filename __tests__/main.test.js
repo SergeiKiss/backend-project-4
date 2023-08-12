@@ -42,10 +42,24 @@ test('page-loader - basic case', async () => {
     .get(url.pathname)
     .reply(200, rawHTML);
 
+  nock(url.origin)
+    .get(url.pathname)
+    .reply(200, rawHTML);
+
   const imgURL = new URL('https://ru.hexlet.io/assets/professions/nodejs.png');
   nock(imgURL.origin)
     .get(imgURL.pathname)
     .reply(200, expectedImage);
+
+  const stylesheetURL = new URL('https://ru.hexlet.io/assets/application.css');
+  nock(stylesheetURL.origin)
+    .get(stylesheetURL.pathname)
+    .reply(200, 'h3 { font-weight: normal; }');
+
+  const scriptURL = new URL('https://ru.hexlet.io/packs/js/runtime.js');
+  nock(scriptURL.origin)
+    .get(scriptURL.pathname)
+    .reply(200, "console.log('Hello, World!')");
 
   const logSpy = jest.spyOn(console, 'log');
 

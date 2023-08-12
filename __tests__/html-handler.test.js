@@ -37,7 +37,11 @@ beforeEach(async () => {
 });
 
 test('extractFilesAndPrepareHTML - basic case', async () => {
-  const url = 'https://ru.hexlet.io/courses';
+  const url = new URL('https://ru.hexlet.io/courses');
+  nock(url.origin)
+    .get(url.pathname)
+    .reply(200, rawHTML);
+
   const imgURL = new URL('https://ru.hexlet.io/assets/professions/nodejs.png');
   nock(imgURL.origin)
     .get(imgURL.pathname)
@@ -53,7 +57,7 @@ test('extractFilesAndPrepareHTML - basic case', async () => {
     .get(scriptURL.pathname)
     .reply(200, "console.log('Hello, World!')");
 
-  const preparedHTML = await extractFilesAndPrepareHTML(url, currentDir, rawHTML)
+  const preparedHTML = await extractFilesAndPrepareHTML(url.href, currentDir, rawHTML)
     .then(async (html) => {
       const prettierConfig = await prettier.resolveConfig(afterPath);
       return prettier.format(html, { ...prettierConfig, filepath: afterPath });
