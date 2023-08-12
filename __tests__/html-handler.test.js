@@ -19,6 +19,8 @@ const getFixturePath = (filename) => path.join(__dirname, '.', '__fixtures__', f
 const noop = () => {};
 const beforePath = getFixturePath('before.html');
 const afterPath = getFixturePath('after.html');
+const imagePath = getFixturePath('nodejs.png');
+const expectedImage = await fs.readFile(imagePath);
 let currentDir;
 let rawHTML;
 let expectedHTML;
@@ -39,7 +41,7 @@ test('extractFilesAndPrepareHTML - basic case', async () => {
   const imgURL = new URL('https://ru.hexlet.io/assets/professions/nodejs.png');
   nock(imgURL.origin)
     .get(imgURL.pathname)
-    .reply(200, Buffer.from('test data'));
+    .reply(200, expectedImage);
 
   const preparedHTML = await extractFilesAndPrepareHTML(url, currentDir, rawHTML)
     .then(async (html) => {
@@ -54,8 +56,13 @@ test('extractFilesAndPrepareHTML - basic case', async () => {
       expect(true).toBeFalsy();
     });
 
+  const imgName = 'ru-hexlet-io-assets-professions-nodejs.png';
   const contentPaths = await fs.readdir(expectedFilesDirPath);
-  expect(contentPaths.includes('ru-hexlet-io-assets-professions-nodejs.png')).toBeTruthy();
+  expect(contentPaths.includes(imgName)).toBeTruthy();
+
+  const imgPath = path.join(expectedFilesDirPath, imgName);
+  const actualImage = await fs.readFile(imgPath);
+  expect(expectedImage).toEqual(actualImage);
 });
 
 afterAll(() => {

@@ -5,3 +5,4 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/c73eb658a988d062c6f8/test_coverage)](https://codeclimate.com/github/SergeiKiss/backend-project-4/test_coverage)
 
 https://asciinema.org/a/601418 - load and save
+https://asciinema.org/a/602137 - load with images
