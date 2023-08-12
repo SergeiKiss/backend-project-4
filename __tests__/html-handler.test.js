@@ -3,9 +3,13 @@ import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { beforeEach, test, expect, afterAll } from '@jest/globals'; // eslint-disable-line
+import nock from 'nock'; // eslint-disable-line
+import * as prettier from 'prettier'; // eslint-disable-line
 import extractFilesAndPrepareHTML from '../src/helpers/html-handler.js';
 
-// extractFilesAndPrepareHTML(url, dir, rawHTML)
+// extractFilesAndPrepareHTML(url, dirPath, rawHTML)
+
+nock.disableNetConnect();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,12 +27,25 @@ beforeEach(async () => {
   await fs.rm(currentDir, { recursive: true }).catch(noop);
   currentDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader-'));
   rawHTML = await fs.readFile(beforePath, 'utf-8');
-  expectedHTML = await fs.readFile(afterPath, 'utf-8');
+  expectedHTML = await fs.readFile(afterPath, 'utf-8')
+    .then(async (html) => {
+      const prettierConfig = await prettier.resolveConfig(afterPath);
+      return prettier.format(html, { ...prettierConfig, filepath: afterPath });
+    });
 });
 
 test('extractFilesAndPrepareHTML - basic case', async () => {
   const url = 'https://ru.hexlet.io/courses';
-  const preparedHTML = await extractFilesAndPrepareHTML(url, currentDir, rawHTML);
+  const imgURL = new URL('https://ru.hexlet.io/assets/professions/nodejs.png');
+  nock(imgURL.origin)
+    .get(imgURL.pathname)
+    .reply(200, Buffer.from('test data'));
+
+  const preparedHTML = await extractFilesAndPrepareHTML(url, currentDir, rawHTML)
+    .then(async (html) => {
+      const prettierConfig = await prettier.resolveConfig(afterPath);
+      return prettier.format(html, { ...prettierConfig, filepath: afterPath });
+    });
   expect(preparedHTML).toEqual(expectedHTML);
 
   const expectedFilesDirPath = path.resolve(currentDir, 'ru-hexlet-io-courses_files');

@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { beforeEach, test, expect, afterAll, jest } from '@jest/globals'; // eslint-disable-line
 import nock from 'nock'; // eslint-disable-line
+import * as prettier from 'prettier'; // eslint-disable-line
 import loadPage from '../src/index.js';
 
 // loadPage(url, outputPath)
@@ -26,7 +27,11 @@ beforeEach(async () => {
   await fs.rm(currentDir, { recursive: true }).catch(noop);
   currentDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader-'));
   rawHTML = await fs.readFile(beforePath, 'utf-8');
-  expectedHTML = await fs.readFile(afterPath, 'utf-8');
+  expectedHTML = await fs.readFile(afterPath, 'utf-8')
+    .then(async (html) => {
+      const prettierConfig = await prettier.resolveConfig(afterPath);
+      return prettier.format(html, { ...prettierConfig, filepath: afterPath });
+    });
 });
 
 test('page-loader - basic case', async () => {
@@ -35,12 +40,20 @@ test('page-loader - basic case', async () => {
     .get(url.pathname)
     .reply(200, rawHTML);
 
+  const imgURL = new URL('https://ru.hexlet.io/assets/professions/nodejs.png');
+  nock(imgURL.origin)
+    .get(imgURL.pathname)
+    .reply(200, Buffer.from('test data'));
+
   const logSpy = jest.spyOn(console, 'log');
 
   await loadPage(url.href, currentDir);
-
   const expectedMainFilePath = `${currentDir}/ru-hexlet-io-courses.html`;
-  const actualData = await fs.readFile(expectedMainFilePath, { encoding: 'utf8' });
+  const actualData = await fs.readFile(expectedMainFilePath, 'utf-8')
+    .then(async (html) => {
+      const prettierConfig = await prettier.resolveConfig(afterPath);
+      return prettier.format(html, { ...prettierConfig, filepath: afterPath });
+    });
 
   expect(actualData).toEqual(expectedHTML);
   expect(logSpy).toHaveBeenCalledWith(expectedMainFilePath);
