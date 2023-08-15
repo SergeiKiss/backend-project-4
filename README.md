@@ -6,4 +6,5 @@
 
 https://asciinema.org/a/601418 - load and save <br>
 https://asciinema.org/a/602137 - load with images <br>
-https://asciinema.org/a/602203 - load with images, links and scripts
+https://asciinema.org/a/602203 - load with images, links and scripts <br>
+https://asciinema.org/a/602692 - logging
