@@ -2,9 +2,11 @@ import fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { beforeEach, test, expect, afterAll } from '@jest/globals'; // eslint-disable-line
-import nock from 'nock'; // eslint-disable-line
-import * as prettier from 'prettier'; // eslint-disable-line
+import {
+  beforeEach, test, expect, afterAll,
+} from '@jest/globals';
+import nock from 'nock';
+import * as prettier from 'prettier';
 import extractFilesAndPrepareHTML from '../src/helpers/html-handler.js';
 
 // extractFilesAndPrepareHTML(url, outputDirPath, rawHTML)
