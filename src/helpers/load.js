@@ -14,5 +14,8 @@ export default (url, responseType = 'json') => {
     log(`Received response from ${response.config.url} with status ${response.status}`);
     return response.data;
   })
-    .catch((e) => log(e.message));
+    .catch((e) => {
+      log(e.message);
+      throw new Error(e.message);
+    });
 };

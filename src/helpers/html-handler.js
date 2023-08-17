@@ -36,26 +36,30 @@ const loadFilesAndChangeAttrs = (elements, outputDir, url, $, attrName) => {
 };
 
 const extractFilesAndPrepareHTML = (url, outputDirPath, rawHTML) => {
-  const { hostname, pathname } = new URL(url);
-  const dirFilesName = createName(`${hostname}${pathname}`, '_files');
-  const dirFilesPath = path.resolve(outputDirPath, dirFilesName);
-  const $ = cheerio.load(rawHTML);
-  log(`Creating a directory for assets (path: ${dirFilesPath})`);
-  return fs.mkdir(dirFilesPath)
-    .then(() => {
-      log('Uploading images');
-      const images = $('img');
-      loadFilesAndChangeAttrs(images, { dirFilesPath, dirFilesName }, url, $, 'src');
+  try {
+    const { hostname, pathname } = new URL(url);
+    const dirFilesName = createName(`${hostname}${pathname}`, '_files');
+    const dirFilesPath = path.resolve(outputDirPath, dirFilesName);
+    const $ = cheerio.load(rawHTML);
+    log(`Creating a directory for assets (path: ${dirFilesPath})`);
+    return fs.mkdir(dirFilesPath)
+      .then(() => {
+        log('Uploading images');
+        const images = $('img');
+        loadFilesAndChangeAttrs(images, { dirFilesPath, dirFilesName }, url, $, 'src');
 
-      log('Uploading assets from link elements');
-      const links = $('link');
-      loadFilesAndChangeAttrs(links, { dirFilesPath, dirFilesName }, url, $, 'href');
+        log('Uploading assets from link elements');
+        const links = $('link');
+        loadFilesAndChangeAttrs(links, { dirFilesPath, dirFilesName }, url, $, 'href');
 
-      log('Uploading scripts');
-      const scripts = $('script');
-      loadFilesAndChangeAttrs(scripts, { dirFilesPath, dirFilesName }, url, $, 'src');
+        log('Uploading scripts');
+        const scripts = $('script');
+        loadFilesAndChangeAttrs(scripts, { dirFilesPath, dirFilesName }, url, $, 'src');
 
-      return $.html();
-    });
+        return $.html();
+      });
+  } catch (e) {
+    throw new Error(e.message);
+  }
 };
 export default extractFilesAndPrepareHTML;

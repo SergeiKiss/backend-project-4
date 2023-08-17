@@ -8,6 +8,10 @@ const log = debug('page-loader');
 export default (url, outputPath) => load(url)
   .then((rawHTML) => extractFilesAndPrepareHTML(url, outputPath, rawHTML)
     .then((preparedHTML) => wf(url, outputPath, preparedHTML)
-      .then((filePath) => console.log(filePath))
-      .catch((e) => log(e.message))))
-  .catch((e) => log(e.message));
+      .then((filePath) => {
+        console.log(filePath);
+      })))
+  .catch((e) => {
+    log(e.message);
+    throw new Error(e.message);
+  });
