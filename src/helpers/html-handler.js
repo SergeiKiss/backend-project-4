@@ -17,7 +17,7 @@ const createTasksToLoadAssets = (elements, outputDir, url, $, attrName) => {
     log(`Link handling - ${attr}`);
     const elURL = new URL(attr, url);
     const { hostname: elHostname, pathname: elPathname } = elURL;
-    if (hostname === elHostname) {
+    if (hostname === elHostname && attr !== undefined) {
       log('Data can be loaded');
       const { dir, ext, name } = path.parse(`${elHostname}${elPathname}`);
       const elName = createName(`${dir}/${name}`, ext || '.html');
@@ -28,10 +28,6 @@ const createTasksToLoadAssets = (elements, outputDir, url, $, attrName) => {
         title: elURL.href,
         task: () => load(elURL, responseType)
           .then((data) => {
-            if (data === undefined) {
-              log('Data could not be written to file');
-              throw new Error('Data could not be written to file');
-            }
             log('Start writing data to a file');
             fs.writeFile(elPath, data);
           }),
@@ -41,7 +37,7 @@ const createTasksToLoadAssets = (elements, outputDir, url, $, attrName) => {
   return tasks;
 };
 
-const extractFilesAndPrepareHTML = (url, outputDirPath, rawHTML) => {
+export default (url, outputDirPath, rawHTML) => {
   const { hostname, pathname } = new URL(url);
   const dirFilesName = createName(`${hostname}${pathname}`, '_files');
   const dirFilesPath = path.resolve(outputDirPath, dirFilesName);
@@ -50,25 +46,25 @@ const extractFilesAndPrepareHTML = (url, outputDirPath, rawHTML) => {
   log(`Creating a directory for assets (path: ${dirFilesPath})`);
   return fs.mkdir(dirFilesPath)
     .then(() => {
-      log('Uploading images');
+      log('Preparing tasks for images');
       const images = $('img');
       const imgTasks = createTasksToLoadAssets(images, { dirFilesPath, dirFilesName }, url, $, 'src');
 
-      log('Uploading assets from link elements');
+      log('Preparing tasks for links');
       const links = $('link');
       const linksTasks = createTasksToLoadAssets(links, { dirFilesPath, dirFilesName }, url, $, 'href');
 
-      log('Uploading scripts');
+      log('Preparing tasks for scripts');
       const scripts = $('script');
       const scriptsTasks = createTasksToLoadAssets(scripts, { dirFilesPath, dirFilesName }, url, $, 'src');
 
-      new Listr(
+      log('Start loading assets');
+      return new Listr(
         [...imgTasks, ...linksTasks, ...scriptsTasks],
         { concurrent: true, exitOnError: false },
       )
         .run()
+        .then(() => $.html())
         .catch((err) => console.error(err));
-      return $.html();
     });
 };
-export default extractFilesAndPrepareHTML;

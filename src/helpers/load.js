@@ -15,7 +15,7 @@ export default (url, responseType = 'json') => {
     return response.data;
   })
     .catch((e) => {
-      log(e.message);
+      log(`Error '${e.message}' when loading ${url}`);
       throw new Error(e.message);
     });
 };

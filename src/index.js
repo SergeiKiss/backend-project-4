@@ -1,17 +1,27 @@
 import debug from 'debug';
-import load from './helpers/load.js';
-import wf from './helpers/writeFile.js';
-import extractFilesAndPrepareHTML from './helpers/html-handler.js';
+import loadMainHtmlFile from './helpers/load.js';
+import loadAssetsAndPrepareHTML from './helpers/html-handler.js';
+import wtiteMainHtmlFile from './helpers/writeFile.js';
 
 const log = debug('page-loader');
 
-export default (url, outputPath) => load(url)
-  .then((rawHTML) => extractFilesAndPrepareHTML(url, outputPath, rawHTML)
-    .then((preparedHTML) => wf(url, outputPath, preparedHTML)
-      .then((filePath) => {
-        console.log(filePath);
-      })))
-  .catch((e) => {
-    log(e.message);
-    // throw new Error(e.message);
-  });
+export default (url, outputPath) => {
+  log('Start loading main html file');
+  return loadMainHtmlFile(url)
+    .then((rawHTML) => {
+      log('Start preparing the file');
+      return loadAssetsAndPrepareHTML(url, outputPath, rawHTML)
+        .then((preparedHTML) => {
+          log('Start writing prepared data to the main html file');
+          return wtiteMainHtmlFile(url, outputPath, preparedHTML)
+            .then((filePath) => {
+              console.log(`Page was successfully downloaded into '${filePath}'`);
+            });
+        });
+    })
+    .catch((e) => {
+      log(`Further work of the application is impossible due to an error '${e.message}'`);
+      log('Application is shutting down');
+      throw new Error(e.message);
+    });
+};

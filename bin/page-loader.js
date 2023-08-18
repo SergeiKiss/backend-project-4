@@ -1,6 +1,9 @@
 #!/usr/bin/env node
 import { program } from 'commander';
+import debug from 'debug';
 import app from '../src/index.js';
+
+const log = debug('page-loader');
 
 program
   .description('Page loader utility')
@@ -9,13 +12,15 @@ program
   .arguments('<url>')
   .action((url, options) => {
     const { output } = options;
+    log('The application has started');
     app(url, output)
       .then(() => {
-        // process.exit(0);
+        log('Application completed successfully');
+        process.exit(0);
       })
       .catch((e) => {
-        console.error(e.message);
-        // process.exit(1);
+        console.error(`Application failed with error '${e.message}'`);
+        process.exit(1);
       });
   });
 

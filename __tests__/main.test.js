@@ -75,7 +75,7 @@ describe('general cases', () => {
       });
 
     expect(actualData).toEqual(expectedHTML);
-    expect(logSpy).toHaveBeenCalledWith(expectedMainFilePath);
+    expect(logSpy).toHaveBeenCalledWith(`Page was successfully downloaded into '${expectedMainFilePath}'`);
 
     const expectedFilesDirPath = path.resolve(currentDir, 'ru-hexlet-io-courses_files');
     await fs.opendir(expectedFilesDirPath)

@@ -7,7 +7,7 @@ import {
 } from '@jest/globals';
 import nock from 'nock';
 import * as prettier from 'prettier';
-import extractFilesAndPrepareHTML from '../src/helpers/html-handler.js';
+import loadAssetsAndPrepareHTML from '../src/helpers/html-handler.js';
 
 // extractFilesAndPrepareHTML(url, outputDirPath, rawHTML)
 
@@ -59,7 +59,7 @@ test('extractFilesAndPrepareHTML - basic case', async () => {
     .get(scriptURL.pathname)
     .reply(200, "console.log('Hello, World!')");
 
-  const preparedHTML = await extractFilesAndPrepareHTML(url.href, currentDir, rawHTML)
+  const preparedHTML = await loadAssetsAndPrepareHTML(url.href, currentDir, rawHTML)
     .then(async (html) => {
       const prettierConfig = await prettier.resolveConfig(afterPath);
       return prettier.format(html, { ...prettierConfig, filepath: afterPath });
