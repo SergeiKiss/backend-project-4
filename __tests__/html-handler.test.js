@@ -69,9 +69,8 @@ test('extractFilesAndPrepareHTML - basic case', async () => {
 
   const expectedFilesDirPath = path.resolve(currentDir, 'ru-hexlet-io-courses_files');
 
-  expect.assertions(7);
-  await fs.opendir(expectedFilesDirPath)
-    .catch(() => expect(true).toBeFalsy());
+  await expect(fs.opendir(expectedFilesDirPath))
+    .resolves.not.toThrow();
 
   const imgName = 'ru-hexlet-io-assets-professions-nodejs.png';
   const stylesheetName = 'ru-hexlet-io-assets-application.css';
