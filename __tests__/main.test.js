@@ -18,6 +18,8 @@ const __dirname = path.dirname(__filename);
 
 const getFixturePath = (filename) => path.join(__dirname, '.', '__fixtures__', filename);
 
+expect.assertions(8);
+
 const noop = () => {};
 const beforePath = getFixturePath('before.html');
 const afterPath = getFixturePath('after.html');
@@ -79,11 +81,8 @@ describe('general cases', () => {
     expect(logSpy).toHaveBeenCalledWith(`Page was successfully downloaded into '${expectedMainFilePath}'`);
 
     const expectedFilesDirPath = path.resolve(currentDir, 'ru-hexlet-io-courses_files');
-    try {
-      await fs.opendir(expectedFilesDirPath);
-    } catch {
-      expect(true).toBeFalsy();
-    }
+    await fs.opendir(expectedFilesDirPath)
+      .catch(() => expect(true).toBeFalsy());
 
     const imgName = 'ru-hexlet-io-assets-professions-nodejs.png';
     const stylesheetName = 'ru-hexlet-io-assets-application.css';
@@ -115,11 +114,8 @@ describe('error cases', () => {
       .get(url.pathname)
       .reply(404);
 
-    try {
-      await loadPage(url.href, currentDir);
-    } catch (e) {
-      expect(e.message).toBe('Request failed with status code 404');
-    }
+    await loadPage(url.href, currentDir)
+      .catch((e) => expect(e.message).toMatch('Request failed with status code 404'));
   });
 
   test('network error - 500', async () => {
@@ -127,11 +123,8 @@ describe('error cases', () => {
       .get(url.pathname)
       .reply(500);
 
-    try {
-      await loadPage(url.href, currentDir);
-    } catch (e) {
-      expect(e.message).toBe('Request failed with status code 500');
-    }
+    await loadPage(url.href, currentDir)
+      .catch((e) => expect(e.message).toMatch('Request failed with status code 500'));
   });
 
   test('file system error - access is denied', async () => {
@@ -159,20 +152,14 @@ describe('error cases', () => {
       .reply(200, "console.log('Hello, World!')");
 
     await fs.chmod(currentDir, 0o400);
-    try {
-      await loadPage(url.href, currentDir);
-    } catch (e) {
-      expect(e.message).toMatch(/EACCES/);
-    }
+    await loadPage(url.href, currentDir)
+      .catch((e) => expect(e.message).toMatch(/EACCES/));
   });
 
   test("file system error - output directory doesn't exist", async () => {
     const badPath = path.join(currentDir, 'unknown');
-    try {
-      await loadPage(url.href, badPath);
-    } catch (e) {
-      expect(e.message).toMatch(/ENOENT/);
-    }
+    await loadPage(url.href, badPath)
+      .catch((e) => expect(e.message).toMatch(/ENOENT/));
   });
 });
 
