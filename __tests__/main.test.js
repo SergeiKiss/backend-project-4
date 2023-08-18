@@ -22,10 +22,10 @@ const noop = () => {};
 const beforePath = getFixturePath('before.html');
 const afterPath = getFixturePath('after.html');
 const imagePath = getFixturePath('nodejs.png');
-const expectedImage = await fs.readFile(imagePath);
 let currentDir;
 let rawHTML;
 let expectedHTML;
+let expectedImage;
 
 beforeEach(async () => {
   await fs.rm(currentDir, { recursive: true }).catch(noop);
@@ -36,6 +36,7 @@ beforeEach(async () => {
       const prettierConfig = await prettier.resolveConfig(afterPath);
       return prettier.format(html, { ...prettierConfig, filepath: afterPath });
     });
+  expectedImage = await fs.readFile(imagePath);
 });
 
 describe('general cases', () => {
