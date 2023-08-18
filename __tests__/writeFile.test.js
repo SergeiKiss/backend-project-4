@@ -17,20 +17,14 @@ beforeEach(async () => {
   currentDir = await fs.mkdtemp(path.join(os.tmpdir(), 'page-loader-'));
 });
 
-test('writeFile - basic case', async () => {
-  const url = 'https://ru.hexlet.io/courses';
-  const actualPath = await wf(url, currentDir, expectedData);
-  const expectedPath = `${currentDir}/ru-hexlet-io-courses.html`;
-  expect(actualPath).toEqual(expectedPath);
+const dataTable = [
+  { url: 'https://ru.hexlet.io/courses', expectedFileName: 'ru-hexlet-io-courses.html' },
+  { url: 'https://ru.hexlet.io/123456', expectedFileName: 'ru-hexlet-io-123456.html' },
+];
 
-  const actualData = await fs.readFile(expectedPath, 'utf-8');
-  expect(actualData).toEqual(expectedData);
-});
-
-test('writeFile - case with numbers in url', async () => {
-  const url = 'https://ru.hexlet.io/123456';
+test.each(dataTable)('writeFile - basic case for $url', async ({ url, expectedFileName }) => {
   const actualPath = await wf(url, currentDir, expectedData);
-  const expectedPath = `${currentDir}/ru-hexlet-io-123456.html`;
+  const expectedPath = `${currentDir}/${expectedFileName}`;
   expect(actualPath).toEqual(expectedPath);
 
   const actualData = await fs.readFile(expectedPath, 'utf-8');

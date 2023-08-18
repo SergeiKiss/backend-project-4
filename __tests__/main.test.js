@@ -160,29 +160,6 @@ describe('error cases', () => {
   });
 
   test("file system error - output directory doesn't exist", async () => {
-    nock(url.origin)
-      .get(url.pathname)
-      .reply(200, rawHTML);
-
-    nock(url.origin)
-      .get(url.pathname)
-      .reply(200, rawHTML);
-
-    const imgURL = new URL('https://ru.hexlet.io/assets/professions/nodejs.png');
-    nock(imgURL.origin)
-      .get(imgURL.pathname)
-      .reply(200, expectedImage);
-
-    const stylesheetURL = new URL('https://ru.hexlet.io/assets/application.css');
-    nock(stylesheetURL.origin)
-      .get(stylesheetURL.pathname)
-      .reply(200, 'h3 { font-weight: normal; }');
-
-    const scriptURL = new URL('https://ru.hexlet.io/packs/js/runtime.js');
-    nock(scriptURL.origin)
-      .get(scriptURL.pathname)
-      .reply(200, "console.log('Hello, World!')");
-
     const badPath = path.join(currentDir, 'unknown');
     await loadPage(url.href, badPath)
       .catch((e) => {
