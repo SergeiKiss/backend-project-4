@@ -11,11 +11,11 @@ program
     const { output } = options;
     app(url, output)
       .then(() => {
-        process.exit(0);
+        // process.exit(0);
       })
       .catch((e) => {
         console.error(e.message);
-        process.exit(1);
+        // process.exit(1);
       });
   });
 

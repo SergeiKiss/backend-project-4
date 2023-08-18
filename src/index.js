@@ -13,5 +13,5 @@ export default (url, outputPath) => load(url)
       })))
   .catch((e) => {
     log(e.message);
-    throw new Error(e.message);
+    // throw new Error(e.message);
   });
