@@ -79,10 +79,11 @@ describe('general cases', () => {
     expect(logSpy).toHaveBeenCalledWith(`Page was successfully downloaded into '${expectedMainFilePath}'`);
 
     const expectedFilesDirPath = path.resolve(currentDir, 'ru-hexlet-io-courses_files');
-    await fs.opendir(expectedFilesDirPath)
-      .catch(() => {
-        expect(true).toBeFalsy();
-      });
+    try {
+      await fs.opendir(expectedFilesDirPath);
+    } catch {
+      expect(true).toBeFalsy();
+    }
 
     const imgName = 'ru-hexlet-io-assets-professions-nodejs.png';
     const stylesheetName = 'ru-hexlet-io-assets-application.css';
@@ -114,9 +115,11 @@ describe('error cases', () => {
       .get(url.pathname)
       .reply(404);
 
-    await loadPage(url.href, currentDir).catch((e) => {
+    try {
+      await loadPage(url.href, currentDir);
+    } catch (e) {
       expect(e.message).toBe('Request failed with status code 404');
-    });
+    }
   });
 
   test('network error - 500', async () => {
@@ -124,9 +127,11 @@ describe('error cases', () => {
       .get(url.pathname)
       .reply(500);
 
-    await loadPage(url.href, currentDir).catch((e) => {
+    try {
+      await loadPage(url.href, currentDir);
+    } catch (e) {
       expect(e.message).toBe('Request failed with status code 500');
-    });
+    }
   });
 
   test('file system error - access is denied', async () => {
@@ -154,18 +159,20 @@ describe('error cases', () => {
       .reply(200, "console.log('Hello, World!')");
 
     await fs.chmod(currentDir, 0o400);
-    await loadPage(url.href, currentDir)
-      .catch((e) => {
-        expect(e.message).toMatch(/EACCES/);
-      });
+    try {
+      await loadPage(url.href, currentDir);
+    } catch (e) {
+      expect(e.message).toMatch(/EACCES/);
+    }
   });
 
   test("file system error - output directory doesn't exist", async () => {
     const badPath = path.join(currentDir, 'unknown');
-    await loadPage(url.href, badPath)
-      .catch((e) => {
-        expect(e.message).toMatch(/ENOENT/);
-      });
+    try {
+      await loadPage(url.href, badPath);
+    } catch (e) {
+      expect(e.message).toMatch(/ENOENT/);
+    }
   });
 });
 
