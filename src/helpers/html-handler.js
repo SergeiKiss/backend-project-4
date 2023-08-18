@@ -8,6 +8,19 @@ import { createName } from './common-funcs.js';
 
 const log = debug('page-loader');
 
+const createTask = (elURL, ext, elPath) => {
+  const responseType = ext === '' ? 'json' : 'stream';
+  const task = {
+    title: elURL.href,
+    task: () => load(elURL, responseType)
+      .then((data) => {
+        log('Start writing data to a file');
+        fs.writeFile(elPath, data);
+      }),
+  };
+  return task;
+};
+
 const createTasksToLoadAssets = (elements, outputDir, url, $, attrName) => {
   const tasks = [];
   for (let i = 0; i < elements.length; i += 1) {
@@ -21,17 +34,9 @@ const createTasksToLoadAssets = (elements, outputDir, url, $, attrName) => {
       log('Data can be loaded');
       const { dir, ext, name } = path.parse(`${elHostname}${elPathname}`);
       const elName = createName(`${dir}/${name}`, ext || '.html');
-      const responseType = ext === '' ? 'json' : 'stream';
       const elPath = path.resolve(outputDir.dirFilesPath, elName);
       el.attr(attrName, path.join(outputDir.dirFilesName, elName));
-      tasks.push({
-        title: elURL.href,
-        task: () => load(elURL, responseType)
-          .then((data) => {
-            log('Start writing data to a file');
-            fs.writeFile(elPath, data);
-          }),
-      });
+      tasks.push(createTask(elURL, ext, elPath));
     } else log("Data cant't be loaded");
   }
   return tasks;

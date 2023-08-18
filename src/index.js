@@ -5,7 +5,7 @@ import wtiteMainHtmlFile from './helpers/writeFile.js';
 
 const log = debug('page-loader');
 
-export default (url, outputPath) => {
+export default (url, outputPath = process.cwd()) => {
   log('Start loading main html file');
   return loadMainHtmlFile(url)
     .then((rawHTML) => {

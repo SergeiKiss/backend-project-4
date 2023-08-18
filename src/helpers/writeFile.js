@@ -14,5 +14,8 @@ export default (url, dir, data) => {
       log('Finish writing to main html file');
       return filePath;
     })
-    .catch((e) => log(e.message));
+    .catch((e) => {
+      log(`Error '${e.message}' when writing main html file`);
+      throw new Error(e.message);
+    });
 };
