@@ -1,6 +1,9 @@
-import axios from 'axios';
-import 'axios-debug-log'; // Why doesn't it work?
+import { createRequire } from 'node:module';
 import debug from 'debug';
+
+const require = createRequire(import.meta.url);
+require('axios-debug-log');
+const axios = require('axios');
 
 const log = debug('page-loader');
 
